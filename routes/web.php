@@ -21,4 +21,12 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/coucou', function (){
+    return response()->make('coucou', 200, ['Content-Type' => 'text/plain']);
+});
+
+
+
 require __DIR__.'/auth.php';
+
+

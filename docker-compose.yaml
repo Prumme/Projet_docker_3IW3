@@ -1,0 +1,57 @@
+version: '3'
+services:
+  db:
+    image: 'mysql/mysql-server:8.0'
+
+    environment:
+      MYSQL_ROOT_PASWORD: 'password'
+      MYSQL_DATABASE: 'data'
+      MYSQL_USER: 'aurel'
+      MYSQL_PASSWORD: 'aurel'
+
+    ports:
+      - '3307:3306'
+
+  # composer:
+  #   image: 'composer'
+  #   volumes:
+  #     - '.:/app'
+  #   command: composer/composer install
+  #   container_name: composer
+
+  # node:
+  #   image: 'node'
+  #   volumes:
+  #     - .:/home/app
+  #   command: npm install
+  #   container_name: node
+
+  php1:
+    build: '.'
+    volumes:
+      - ".:/app"
+      # - "./database/.:/database/."
+    ports:
+      - "9000:9000"
+
+    environment:
+      - LOG_CHANNEL=stderr
+      - LOG_LEVEL="debug"
+      - APP_KEY=base64:pmAtXp57hSHfPgHDkwlhfoEvBfR4fxDJVx5ZHGC9XbE=
+
+  nginx1:
+    build:
+      dockerfile: './Dockerfile.nginx' 
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    # volumes:
+    #   - ./:/var/www/home
+    #   - ./nginx/conf.d/:/etc/nginx/conf.d/
+
+    depends_on:
+      - php1
+      - db
+
